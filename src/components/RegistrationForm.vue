@@ -67,7 +67,7 @@ const emit = defineEmits<{
   ): void
 }>()
 
-function markClicked(field: keyof typeof touched.value) {
+function markTouched(field: keyof typeof touched.value) {
   touched.value[field] = true
 }
 
@@ -107,7 +107,7 @@ function saveParticipant() {
           class="form-control"
           :class="{ 'is-invalid': nameError, 'is-valid': touched.name && !nameError }"
           v-model="name"
-          @blur="markClicked('name')"
+          @blur="markTouched('name')"
           placeholder="Введіть ім'я"
         />
         <div class="invalid-feedback" v-if="nameError">{{ nameError }}</div>
@@ -120,7 +120,7 @@ function saveParticipant() {
           class="form-control"
           :class="{ 'is-invalid': birthDateError, 'is-valid': touched.birthDate && !birthDateError }"
           v-model="birthDate"
-          @blur="markClicked('birthDate')"
+          @blur="markTouched('birthDate')"
         />
         <div class="invalid-feedback" v-if="birthDateError">{{ birthDateError }}</div>
       </div>
@@ -132,7 +132,7 @@ function saveParticipant() {
           class="form-control"
           :class="{ 'is-invalid': emailError, 'is-valid': touched.email && !emailError }"
           v-model="email"
-          @blur="markClicked('email')"
+          @blur="markTouched('email')"
         />
         <div class="invalid-feedback" v-if="emailError">{{ emailError }}</div>
       </div>
@@ -144,7 +144,7 @@ function saveParticipant() {
           class="form-control"
           :class="{ 'is-invalid': phoneError, 'is-valid': touched.phone && !phoneError }"
           v-model="phone"
-          @blur="markClicked('phone')"
+          @blur="markTouched('phone')"
         />
         <div class="text-danger">{{ phoneError }}</div>
       </div>
