@@ -47,19 +47,4 @@ const emit = defineEmits<{
 .btn-info {
   background-color: #17a2b8;
 }
-
-.winner-item {
-  background-color: #f8f9fa;
-  transition: background-color 0.2s;
-}
-
-.winner-item:hover {
-  background-color: #e9ecef;
-}
-
-.btn-outline-danger {
-  font-size: 1.5rem;
-  line-height: 1;
-  padding: 0.25rem 0.5rem;
-}
 </style>
