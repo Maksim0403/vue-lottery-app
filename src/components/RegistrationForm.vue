@@ -37,8 +37,8 @@ const emailError = computed(() => {
 const phoneError = computed(() => {
   if (!touched.value.phone) return ''
   if (phone.value.trim() === '') return 'Phone is required'
-  const regex = /^\+?\d{10,15}$/
-  if (!regex.test(phone.value)) return 'Invalid phone format'
+  const regex = /^\+380\d{9}$/
+  if (!regex.test(phone.value)) return 'Invalid phone format (expected: +380XXXXXXXXX)'
   return ''
 })
 
