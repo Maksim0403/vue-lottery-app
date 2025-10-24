@@ -1,9 +1,10 @@
 <script setup lang="ts">
+import BaseButton from '@/components/BaseButton.vue'
+import WinnerCard from '@/components/WinnerCard.vue'
 import type { Participant } from '@/types.ts'
-
 defineProps<{
-  winners: Participant[]
   canAddWinner: boolean
+  winners: Participant[]
 }>()
 
 const emit = defineEmits<{
@@ -18,33 +19,27 @@ const emit = defineEmits<{
       <div class="d-flex align-items-center">
         <div class="flex-grow-1">
           <div class="form-control d-flex flex-wrap align-items-center gap-3 py-2">
-            <span v-for="winner in winners" :key="winner.id" class="badge bg-info text-white">
-              {{ winner.name }}
-              <button
-                type="button"
-                class="btn-close btn-close-white btn-sm ms-1"
-                aria-label="Remove"
-                @click="emit('remove-winner', winner.id)"
-              ></button>
-            </span>
+            <WinnerCard
+              v-for="winner in winners"
+              :key="winner.id"
+              :winner="winner"
+              @remove-winner="emit('remove-winner', winner.id)"
+            />
             Winners
           </div>
         </div>
 
-        <button
-          class="btn btn-info text-white ms-3"
-          @click="emit('add-winner')"
+        <BaseButton
+          label="New winner"
+          variant="info"
+          class="text-white ms-3"
           :disabled="!canAddWinner"
-        >
-          New winner
-        </button>
+          @click="emit('add-winner')"
+        />
       </div>
     </div>
   </div>
 </template>
 
 <style scoped>
-.btn-info {
-  background-color: #17a2b8;
-}
 </style>

@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import BaseButton from '@/components/BaseButton.vue'
+import BaseInput from '@/components/BaseInput.vue'
 
 const name = ref('')
 const birthDate = ref('')
@@ -100,66 +102,52 @@ function saveParticipant() {
 <template>
   <div class="card">
     <div class="card-body">
-      <div class="mb-3">
-        <label class="form-label">Name</label>
-        <input
-          type="text"
-          class="form-control"
-          :class="{ 'is-invalid': nameError, 'is-valid': touched.name && !nameError }"
-          v-model="name"
-          @blur="markTouched('name')"
-          placeholder="Введіть ім'я"
-        />
-        <div class="invalid-feedback" v-if="nameError">{{ nameError }}</div>
-      </div>
+      <BaseInput
+        v-model="name"
+        label="Name"
+        placeholder="Введіть ім'я"
+        :error="nameError"
+        :touched="touched.name"
+        @blur="markTouched('name')"
+      />
 
-      <div class="mb-3">
-        <label class="form-label">Birth Date</label>
-        <input
-          type="date"
-          class="form-control"
-          :class="{ 'is-invalid': birthDateError, 'is-valid': touched.birthDate && !birthDateError }"
-          v-model="birthDate"
-          @blur="markTouched('birthDate')"
-        />
-        <div class="invalid-feedback" v-if="birthDateError">{{ birthDateError }}</div>
-      </div>
-
-      <div class="mb-3">
-        <label class="form-label">Email</label>
-        <input
-          type="email"
-          class="form-control"
-          :class="{ 'is-invalid': emailError, 'is-valid': touched.email && !emailError }"
-          v-model="email"
-          @blur="markTouched('email')"
-        />
-        <div class="invalid-feedback" v-if="emailError">{{ emailError }}</div>
-      </div>
-
-      <div class="mb-3">
-        <label class="form-label">Phone</label>
-        <input
-          type="text"
-          class="form-control"
-          :class="{ 'is-invalid': phoneError, 'is-valid': touched.phone && !phoneError }"
-          v-model="phone"
-          @blur="markTouched('phone')"
-        />
-        <div class="text-danger">{{ phoneError }}</div>
-      </div>
+      <BaseInput
+        type="date"
+        v-model="birthDate"
+        label="Birth Date"
+        :error="birthDateError"
+        :touched="touched.birthDate"
+        @blur="markTouched('birthDate')"
+      />
+      <BaseInput
+        v-model="email"
+        label="Email"
+        placeholder="Введіть email"
+        :error="emailError"
+        :touched="touched.email"
+        @blur="markTouched('email')"
+      />
+      <BaseInput
+        v-model="phone"
+        label="Phone"
+        placeholder="Введіть номер"
+        :error="phoneError"
+        :touched="touched.phone"
+        @blur="markTouched('phone')"
+      />
 
       <div class="d-flex justify-content-end">
-        <button class="btn btn-info text-white" @click="saveParticipant" :disabled="!isFormValid" >
-          Save
-        </button>
+        <BaseButton
+          class="text-white"
+          label="Save"
+          :disabled="!isFormValid"
+          variant="info"
+          @click="saveParticipant"
+        />
       </div>
     </div>
   </div>
 </template>
 
 <style scoped>
-.btn-info {
-  background-color: #17a2b8;
-}
 </style>
