@@ -2,7 +2,7 @@
 import { ref, computed, watch } from 'vue'
 import BaseButton from '@/components/BaseButton.vue'
 import BaseInput from '@/components/BaseInput.vue'
-import type { Participant } from '@/types.ts'
+import type { Participant } from '@/types'
 
 const props = defineProps<{
   modelValue: Participant | null
@@ -10,22 +10,22 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  (e: 'save', updatedParticipant: Participant): void
-  (e: 'add-participant', newParticipant: Omit<Participant, 'id'>): void
+  (e: 'save', updatedUser: Participant): void
+  (e: 'add-user', newUser: Omit<Participant, 'id'>): void
 }>()
 
 const form = ref<Omit<Participant, 'id'>>({
   name: '',
-  birthDate: '',
   email: '',
-  phone: '',
+  password: '',
+  avatar: '',
 })
 
 const touched = ref({
   name: false,
-  birthDate: false,
   email: false,
-  phone: false,
+  password: false,
+  avatar: false,
 })
 
 watch(
@@ -34,58 +34,54 @@ watch(
     if (newVal) {
       form.value = {
         name: newVal.name,
-        birthDate: newVal.birthDate,
         email: newVal.email,
-        phone: newVal.phone,
+        password: newVal.password ?? '',
+        avatar: newVal.avatar,
       }
     } else {
-      form.value = { name: '', birthDate: '', email: '', phone: '' }
+      form.value = { name: '', email: '', password: '', avatar: '' }
     }
-    // скидаємо стани touched при новому завантаженні
-    touched.value = { name: false, birthDate: false, email: false, phone: false }
+
+    touched.value = { name: false, email: false, password: false, avatar: false }
   },
   { immediate: true },
 )
 
-const nameError = computed(() => {
-  if (!touched.value.name) return ''
-  if (form.value.name.trim() === '') return 'Name is required'
-  return ''
-})
-
-const birthDateError = computed(() => {
-  if (!touched.value.birthDate) return ''
-  if (!form.value.birthDate) return 'Birth date is required'
-  if (new Date(form.value.birthDate) > new Date()) return 'Birth date cannot be in the future'
-  return ''
-})
+const nameError = computed(() =>
+  touched.value.name && form.value.name.trim() === '' ? 'Name is required' : '',
+)
 
 const emailError = computed(() => {
   if (!touched.value.email) return ''
-  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  const r = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
   if (form.value.email.trim() === '') return 'Email is required'
-  if (!regex.test(form.value.email)) return 'Invalid email format'
+  if (!r.test(form.value.email)) return 'Invalid email format'
   return ''
 })
 
-const phoneError = computed(() => {
-  if (!touched.value.phone) return ''
-  if (form.value.phone.trim() === '') return 'Phone is required'
-  const regex = /^\+380\d{9}$/
-  if (!regex.test(form.value.phone)) return 'Invalid phone format (expected: +380XXXXXXXXX)'
+const passwordError = computed(() => {
+  if (!touched.value.password) return ''
+  if (form.value.password.trim() === '') return 'Password is required'
+  if (form.value.password.length < 6) return 'Min 6 characters'
+  return ''
+})
+
+const avatarError = computed(() => {
+  if (!touched.value.avatar) return ''
+  if (form.value.avatar.trim() === '') return 'Avatar URL is required'
   return ''
 })
 
 const isFormValid = computed(
   () =>
-    form.value.name.trim() !== '' &&
-    form.value.birthDate !== '' &&
-    form.value.email.trim() !== '' &&
-    form.value.phone.trim() !== '' &&
     !nameError.value &&
-    !birthDateError.value &&
     !emailError.value &&
-    !phoneError.value,
+    !passwordError.value &&
+    !avatarError.value &&
+    form.value.name &&
+    form.value.email &&
+    form.value.password &&
+    form.value.avatar,
 )
 
 function markTouched(field: keyof typeof touched.value) {
@@ -94,78 +90,65 @@ function markTouched(field: keyof typeof touched.value) {
 
 function onSave() {
   if (!isFormValid.value) return
+
   if (props.mode === 'edit' && props.modelValue) {
-    emit('save', {
-      ...props.modelValue,
-      name: form.value.name,
-      birthDate: form.value.birthDate,
-      email: form.value.email,
-      phone: form.value.phone,
-    })
+    emit('save', { ...props.modelValue, ...form.value })
   } else {
-    emit('add-participant', {
-      name: form.value.name,
-      birthDate: form.value.birthDate,
-      email: form.value.email,
-      phone: form.value.phone,
-    })
+    emit('add-user', { ...form.value })
   }
-  form.value = { name: '', birthDate: '', email: '', phone: '' }
-  touched.value = { name: false, birthDate: false, email: false, phone: false }
 }
 </script>
 
 <template>
   <form class="card" @submit.prevent="onSave">
     <div class="card-body">
+
       <BaseInput
         v-model="form.name"
         label="Name"
-        placeholder="Введіть ім'я"
+        placeholder="Enter name"
         :error="nameError"
         :touched="touched.name"
         @blur="markTouched('name')"
       />
 
       <BaseInput
-        type="date"
-        v-model="form.birthDate"
-        label="Birth Date"
-        :error="birthDateError"
-        :touched="touched.birthDate"
-        @blur="markTouched('birthDate')"
-      />
-
-      <BaseInput
         v-model="form.email"
         label="Email"
-        placeholder="Введіть email"
+        placeholder="Enter email"
         :error="emailError"
         :touched="touched.email"
         @blur="markTouched('email')"
       />
 
       <BaseInput
-        v-model="form.phone"
-        label="Phone"
-        placeholder="Введіть номер"
-        :error="phoneError"
-        :touched="touched.phone"
-        @blur="markTouched('phone')"
+        v-model="form.password"
+        label="Password"
+        placeholder="Enter password"
+        :error="passwordError"
+        :touched="touched.password"
+        @blur="markTouched('password')"
+      />
+
+      <BaseInput
+        v-model="form.avatar"
+        label="Avatar URL"
+        placeholder="Enter avatar image link"
+        :error="avatarError"
+        :touched="touched.avatar"
+        @blur="markTouched('avatar')"
       />
 
       <div class="d-flex justify-content-end">
         <BaseButton
           class="text-white"
-          label="Save"
-          :disabled="!isFormValid"
-          variant="info"
-          @click="onSave"
           type="submit"
+          label="Save"
+          variant="info"
+          :disabled="!isFormValid"
         />
       </div>
+
     </div>
   </form>
 </template>
-
-<style scoped></style>

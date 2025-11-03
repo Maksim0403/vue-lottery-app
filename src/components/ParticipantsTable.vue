@@ -3,7 +3,7 @@ import type { Participant } from '@/types.ts'
 import BaseButton from '@/components/BaseButton.vue'
 import { computed, ref } from 'vue'
 
-const props = defineProps<{ participants: Participant[] }>()
+const props = defineProps<{ users: Participant[] }>()
 
 const emit = defineEmits<{
   (e: 'edit-participant', p: Participant): void
@@ -23,7 +23,7 @@ function toggleSort(field: 'name' | 'birthDate') {
 }
 
 const sortedParticipants = computed(() => {
-  const result = [...props.participants]
+  const result = [...props.users]
 
   if (sortBy.value) {
     result.sort((a, b) => {
@@ -64,32 +64,34 @@ const sortedParticipants = computed(() => {
             <th>#</th>
             <th>Name</th>
             <th>Email</th>
-            <th>Phone</th>
-            <th>Birth date</th>
+            <th>Role</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(p, idx) in sortedParticipants" :key="p.id">
-            <td>{{ idx + 1 }}</td>
-            <td>{{ p.name }}</td>
-            <td>{{ p.email }}</td>
-            <td>{{ p.phone }}</td>
-            <td>{{ p.birthDate }}</td>
+          <tr v-for="(u) in sortedParticipants" :key="u.id">
+            <td>{{ u.id }}</td>
+            <td>
+              <router-link :to="{ name: 'user', params: { id: u.id } }">
+                {{ u.name }}
+              </router-link>
+            </td>
+            <td>{{ u.email }}</td>
+            <td>{{ u.role }}</td>
             <td>
               <BaseButton
                 label="Редагувати"
                 variant="primary"
-                @click="emit('edit-participant', p)"
+                @click="emit('edit-participant', u)"
               />
               <BaseButton
                 label="Видалити"
                 variant="danger"
-                @click="emit('delete-participant', p)"
+                @click="emit('delete-participant', u)"
               />
             </td>
           </tr>
-          <tr v-if="participants.length === 0">
+          <tr v-if="users.length === 0">
             <td colspan="6" class="text-center py-3">No participants</td>
           </tr>
         </tbody>
