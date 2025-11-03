@@ -74,8 +74,6 @@ const handleLogout = () => {
   isAuthenticated.value = false
 }
 
-
-
 const showEditModal = ref(false)
 const editingParticipant = ref<Participant | null>(null)
 
@@ -197,7 +195,7 @@ function filterByName(query: string) {
       />
     </div>
 
-    <Modal v-model="showEditModal">
+    <Modal v-model="showEditModal" >
       <template #header>
         <h5 class="modal-title">Редагувати учасника</h5>
       </template>

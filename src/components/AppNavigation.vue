@@ -28,21 +28,25 @@ const handleLogout = () => {
     <router-link
       class="btn"
       active-class="btn-primary text-white"
+      v-if="isAuthenticated"
       :to="{ name: 'home' }"> Home </router-link>
 
     <router-link
       class="btn"
       active-class="btn-primary text-white"
+      v-if="isAuthenticated"
       :to="{ name: 'about' }">About</router-link>
 
     <router-link
       class="btn"
       active-class="btn-primary text-white"
+      v-if="isAuthenticated"
       :to="{ name: 'lottery' }">Lottery</router-link>
 
     <router-link
       class="btn"
       active-class="btn-primary text-white"
+      v-if="isAuthenticated"
       :to="{ name: 'user', params: { id: 1 } }">Users</router-link>
 
     <router-link

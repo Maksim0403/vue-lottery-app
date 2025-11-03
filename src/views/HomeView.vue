@@ -6,6 +6,9 @@ import { createUser } from '@/repositories/UserRepository.ts'
 import { ref } from 'vue'
 
 const errorMessage = ref('')
+const users = ref<Participant[]>([])
+const filteredUsers = ref<Participant[]>([])
+const isLoading = ref(false)
 
 async function addParticipant(user: Omit<Participant, 'id'>) {
   if (users.value.some((p) => p.email.toLowerCase() === user.email.toLowerCase())) {
@@ -38,4 +41,5 @@ async function addParticipant(user: Omit<Participant, 'id'>) {
     mode="create"
   />
 
-  <p v-if="errorMessage" class="text-danger mt-2">{{ errorMessage }}</p></template>
+  <p v-if="errorMessage" class="text-danger mt-2">{{ errorMessage }}</p>
+</template>

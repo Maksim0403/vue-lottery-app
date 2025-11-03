@@ -27,7 +27,6 @@ export async function getUserById(id: number): Promise<Participant> {
   return await res.json()
 }
 
-// src/repositories/UserRepository.ts
 export async function createUser(user: Omit<Participant, 'id'>): Promise<Participant> {
   const token = localStorage.getItem('token')
   if (!token) {
@@ -38,7 +37,7 @@ export async function createUser(user: Omit<Participant, 'id'>): Promise<Partici
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}` // Add JWT token to Authorization header
+      'Authorization': `Bearer ${token}`
     },
     body: JSON.stringify(user)
   })
