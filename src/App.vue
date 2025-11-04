@@ -33,15 +33,24 @@ async function loadUsers() {
   isLoading.value = true
   try {
     const saved = localStorage.getItem('participants')
-
     if (saved) {
-      users.value = JSON.parse(saved)
-    } else {
-      users.value = await getUsers()
-      localStorage.setItem('participants', JSON.stringify(users.value))
+      try {
+        const parsed = JSON.parse(saved)
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          users.value = parsed
+          filteredUsers.value = parsed
+          console.log('Loaded users from localStorage:', parsed.length)
+          return
+        }
+      } catch (e) {
+        console.warn('Error parsing localStorage participants:', e)
+      }
     }
 
+    users.value = await getUsers()
     filteredUsers.value = users.value
+    localStorage.setItem('participants', JSON.stringify(users.value))
+    console.log('Loaded users from API:', users.value.length)
   } catch (err) {
     console.error('Error loading users:', err)
     errorMessage.value = 'Помилка завантаження користувачів'
@@ -49,6 +58,7 @@ async function loadUsers() {
     isLoading.value = false
   }
 }
+
 
 onMounted(async () => {
   await loadUsers()
