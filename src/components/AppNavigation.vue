@@ -44,12 +44,6 @@ const handleLogout = () => {
       :to="{ name: 'lottery' }">Lottery</router-link>
 
     <router-link
-      class="btn"
-      active-class="btn-primary text-white"
-      v-if="isAuthenticated"
-      :to="{ name: 'user', params: { id: 1 } }">Users</router-link>
-
-    <router-link
       v-if="!isAuthenticated"
       class="btn btn-primary ms-auto"
       :to="{ name: 'login' }"
